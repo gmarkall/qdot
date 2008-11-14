@@ -101,6 +101,8 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionZoomOut"/>
     <addaction name="actionDrawLine"/>
     <addaction name="actionPreamble"/>
+    <addaction name="separator"/>
+    <addaction name="actionSetGraphvizPath"/>
    </widget>
    <widget class="QMenu" name="menuInserisci">
     <property name="title">
@@ -491,6 +493,11 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="shortcut">
     <string>Meta+Right</string>
+   </property>
+  </action>
+  <action name="actionSetGraphvizPath">
+   <property name="text">
+    <string>setGraphvizPath</string>
    </property>
   </action>
  </widget>

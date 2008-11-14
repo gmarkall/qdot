@@ -53,6 +53,7 @@ public slots:
     void refreshElements();
     void nextTab();
     void prevTab();
+    void setGraphvizDir();
 private slots:
     void fileChange();
     void about();

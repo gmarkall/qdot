@@ -40,10 +40,10 @@ MainWin::MainWin() : QMainWindow() {
     QSettings setting;
     setting.beginGroup("Application");
     if(!setting.contains("graphvizBinaryDir")){
-        QString graphvizPath=QFileDialog::getExistingDirectory(this,tr("Graphviz bin directory"),"");
-           setting.setValue("graphvizBinaryDir",graphvizPath);
+        setGraphvizDir();
     }
     setting.endGroup();
+
     dotEdits.clear(); //Svuoto la lista degli editor aperti
     actualEditor=NULL;
     basicDirPath=QDir::homePath();
@@ -89,9 +89,9 @@ void MainWin::connectSignals() {
     connect(ui.btnView,SIGNAL(clicked()),this,SLOT(view()));
     connect(ui.actionPreamble,SIGNAL(triggered()),this,SLOT(preamble()));
     connect(ui.actAddElement,SIGNAL(triggered()),this,SLOT(openAddElementWindow()));
+    connect(ui.actionSetGraphvizPath,SIGNAL(triggered()),this,SLOT(setGraphvizDir()));
     connect(ui.actAssociateElement,SIGNAL(triggered()),this,SLOT(openAssociateElementWindow()));
     connect(ui.elementsList,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(addElementFromList(QListWidgetItem*)));
-
 }
 
 void MainWin::newFile() {
@@ -385,4 +385,12 @@ void MainWin::nextTab(){
 
 void MainWin::prevTab(){
     ui.mainTab->setCurrentIndex(ui.mainTab->currentIndex()-1);
+}
+
+void MainWin::setGraphvizDir(){
+    QSettings setting;
+    setting.beginGroup("Application");
+    QString graphvizPath=QFileDialog::getExistingDirectory(this,tr("Graphviz bin directory"),"");
+    setting.setValue("graphvizBinaryDir",graphvizPath);
+    setting.endGroup();
 }
