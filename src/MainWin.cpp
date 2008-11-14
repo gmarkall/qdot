@@ -242,10 +242,11 @@ void MainWin::compile() {
     if (actualEditor!=NULL && !actualEditor->getFileName().isEmpty()) {
         QProcess *dot=new QProcess(this);
         QString dest=actualEditor->getFileName().left(actualEditor->getFileName().lastIndexOf("."));
-        QString basicCmd=QString("%1%2")
+
+#ifdef Q_WS_WIN
+        QString basicCmd=QString("%1\\%2")
                          .arg(setting.value("Application/graphvizBinaryDir").toString())
                          .arg(ui.cmbEngine->currentText());
-#ifdef Q_WS_WIN
         QStringList env = QProcess::systemEnvironment();
         dot->setEnvironment(env);
         QString cmd=QString("%1 -T%2 \"\"%3\"\" -o \"\"%4.%5\"\" -Gsize=\"\"%6,%7\"\"")
@@ -255,6 +256,9 @@ void MainWin::compile() {
                     .arg(QDir::toNativeSeparators(dest)).arg(destType)
                     .arg(ui.edtWidth->value()).arg(ui.edtHeight->value());
 #else
+        QString basicCmd=QString("%1%2")
+                         .arg(setting.value("Application/graphvizBinaryDir").toString())
+                         .arg(ui.cmbEngine->currentText());
         QString cmd=QString("%1 -T%2  %3 -o %4.%5 -Gsize=\"%6,%7\" ")
                     .arg(basicCmd)
                     .arg(destType)
