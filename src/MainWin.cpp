@@ -249,7 +249,7 @@ void MainWin::compile() {
                          .arg(ui.cmbEngine->currentText());
         QStringList env = QProcess::systemEnvironment();
         dot->setEnvironment(env);
-        QString cmd=QString("%1 -T%2 \"\"%3\"\" -o \"\"%4.%5\"\" -Gsize=\"\"%6,%7\"\"")
+        QString cmd=QString("%1 -T%2 \"%3\" -o \"%4.%5\" -Gsize=\"%6,%7\"")
                     .arg(basicCmd)
                     .arg(destType)
                     .arg(QDir::toNativeSeparators(actualEditor->getFileName()))
@@ -266,6 +266,7 @@ void MainWin::compile() {
                     .arg(QDir::toNativeSeparators(dest)).arg(destType).arg(ui.edtWidth->value())
                     .arg(ui.edtHeight->value());
 #endif
+        QMessageBox::information(this,tr("tt"),cmd);
         dot->start(cmd);
         dot->waitForStarted();
         dot->waitForFinished();
