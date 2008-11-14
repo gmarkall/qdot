@@ -31,6 +31,8 @@
 #include <QDebug>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QWindowsVistaStyle>
+#include <QPlastiqueStyle>
 
 MainWin::MainWin() : QMainWindow() {
     //Settaggi di sistema
@@ -66,6 +68,11 @@ MainWin::MainWin() : QMainWindow() {
         }
     }else
         this->zoom=0;
+#ifdef Q_WS_WIN
+    QApplication::setStyle(new QWindowsVistaStyle);
+#else
+    QApplication::setStyle(new QPlastiqueStyle);
+#endif
 }
 
 void MainWin::connectSignals() {
@@ -266,7 +273,6 @@ void MainWin::compile() {
                     .arg(QDir::toNativeSeparators(dest)).arg(destType).arg(ui.edtWidth->value())
                     .arg(ui.edtHeight->value());
 #endif
-        QMessageBox::information(this,tr("tt"),cmd);
         dot->start(cmd);
         dot->waitForStarted();
         dot->waitForFinished();
