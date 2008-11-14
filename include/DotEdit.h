@@ -20,6 +20,7 @@
 #include <QTextEdit>
 #include <QFont>
 #include <QList>
+#include <QKeyEvent>
 #include "DotElement.h"
 class DotEdit : public QTextEdit{
 	Q_OBJECT
@@ -36,6 +37,8 @@ private:
 	QString filename;
 	bool saved;
         QList<DotElement> *elements;
+protected:
+        void keyPressEvent(QKeyEvent *);
 };
 
 #endif /*DOTEDIT_H_*/

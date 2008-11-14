@@ -29,8 +29,21 @@
 #include "AssociateElementWin.h"
 #include <QListIterator>
 #include <QDebug>
+#include <QSettings>
+#include <QCoreApplication>
 
 MainWin::MainWin() : QMainWindow() {
+    //Settaggi di sistema
+    QCoreApplication::setOrganizationName("MZTech");
+    QCoreApplication::setApplicationName("QDot");
+    QCoreApplication::setOrganizationDomain("mztech.info");
+    QSettings setting;
+    setting.beginGroup("Application");
+    if(!setting.contains("graphvizBinaryDir")){
+        QString graphvizPath=QFileDialog::getExistingDirectory(this,tr("Graphviz bin directory"),"");
+           setting.setValue("graphvizBinaryDir",graphvizPath);
+    }
+    setting.endGroup();
     dotEdits.clear(); //Svuoto la lista degli editor aperti
     actualEditor=NULL;
     basicDirPath=QDir::homePath();
@@ -41,7 +54,6 @@ MainWin::MainWin() : QMainWindow() {
     QStringList arguments=QApplication::arguments();
     /*Controllo del parametro -zoom [num]*/
     int loc=arguments.indexOf(QRegExp("-zoom"));
-    qDebug()<< arguments.count();
     if (loc>0){
         //this->actualEditor->zoomIn(arguments.at(loc+1));
         bool convOK;
@@ -52,7 +64,8 @@ MainWin::MainWin() : QMainWindow() {
         else{
             this->zoom=0;
         }
-    }
+    }else
+        this->zoom=0;
 }
 
 void MainWin::connectSignals() {
@@ -86,7 +99,8 @@ void MainWin::newFile() {
     dotEdits << actualEditor;
     ui.mainTab->addTab(actualEditor, tr("SenzaNome"));
     ui.mainTab->setCurrentWidget(actualEditor);
-    actualEditor->zoomIn(this->zoom);
+    if (this->zoom > 0 )
+        actualEditor->zoomIn(this->zoom);
 }
 
 bool MainWin::closeFile() {
@@ -224,17 +238,29 @@ void MainWin::refreshBasicDirPath(QString fname) {
 }
 
 void MainWin::compile() {
+    QSettings setting;
     if (actualEditor!=NULL && !actualEditor->getFileName().isEmpty()) {
         QProcess *dot=new QProcess(this);
         QString dest=actualEditor->getFileName().left(actualEditor->getFileName().lastIndexOf("."));
+        QString basicCmd=QString("%1%2")
+                         .arg(setting.value("Application/graphvizBinaryDir").toString())
+                         .arg(ui.cmbEngine->currentText());
 #ifdef Q_WS_WIN
         QStringList env = QProcess::systemEnvironment();
         dot->setEnvironment(env);
-        QString basicCmd=QString("C:\\Programmi\\Graphviz2.16\\bin\\%1.exe").arg(ui.cmbEngine->currentText());
-        QString cmd=QString("%1 -T%2 \"\"%3\"\" -o \"\"%4.%5\"\" -Gsize=\"\"%6,%7\"\"").arg(basicCmd).arg(destType).arg(QDir::toNativeSeparators(actualEditor->getFileName())).arg(QDir::toNativeSeparators(dest)).arg(destType).arg(ui.edtWidth->value()).arg(ui.edtHeight->value());
+        QString cmd=QString("%1 -T%2 \"\"%3\"\" -o \"\"%4.%5\"\" -Gsize=\"\"%6,%7\"\"")
+                    .arg(basicCmd)
+                    .arg(destType)
+                    .arg(QDir::toNativeSeparators(actualEditor->getFileName()))
+                    .arg(QDir::toNativeSeparators(dest)).arg(destType)
+                    .arg(ui.edtWidth->value()).arg(ui.edtHeight->value());
 #else
-        QString basicCmd=ui.cmbEngine->currentText();
-        QString cmd=QString("%1 -T%2  %3 -o %4.%5 -Gsize=\"%6,%7\" ").arg(basicCmd).arg(destType).arg(QDir::toNativeSeparators(actualEditor->getFileName())).arg(QDir::toNativeSeparators(dest)).arg(destType).arg(ui.edtWidth->value()).arg(ui.edtHeight->value());
+        QString cmd=QString("%1 -T%2  %3 -o %4.%5 -Gsize=\"%6,%7\" ")
+                    .arg(basicCmd)
+                    .arg(destType)
+                    .arg(QDir::toNativeSeparators(actualEditor->getFileName()))
+                    .arg(QDir::toNativeSeparators(dest)).arg(destType).arg(ui.edtWidth->value())
+                    .arg(ui.edtHeight->value());
 #endif
         dot->start(cmd);
         dot->waitForStarted();
@@ -358,5 +384,5 @@ void MainWin::nextTab(){
 }
 
 void MainWin::prevTab(){
-        ui.mainTab->setCurrentIndex(ui.mainTab->currentIndex()-1);
+    ui.mainTab->setCurrentIndex(ui.mainTab->currentIndex()-1);
 }

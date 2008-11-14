@@ -17,11 +17,15 @@
 #include "DotEdit.h"
 #include <QRegExp>
 #include <QDebug>
+#include <QTextBlock>
+#include "DotHighlight.h"
 
-DotEdit::DotEdit(QWidget *parent):QTextEdit	(parent){
+DotEdit::DotEdit(QWidget *parent):QTextEdit(parent){
     this->filename=QString("");
     this->saved=false;
     this->elements=new QList<DotElement>();
+    DotHighlight *highlight= new DotHighlight(this);
+    setTabStopWidth(8);
 }
 
 void DotEdit::setFileName(QString filename){
@@ -58,5 +62,20 @@ void DotEdit::importElements(){
             elements->insert(0,el);
         }
         pos+=elementsExp.matchedLength();
+    }
+}
+
+void DotEdit::keyPressEvent(QKeyEvent *e){
+    int ntab=0;
+    if (e->key()==Qt::Key_Return){
+        QTextBlock prev=textCursor().block();
+        QRegExp tabExp("^\\t*");
+        prev.text().indexOf(tabExp);
+        ntab=tabExp.matchedLength();
+        qDebug()<< ntab;
+    }
+    QTextEdit::keyPressEvent(e);
+    for (int i=0;i<ntab;i++){
+        this->insertPlainText("\t");
     }
 }
