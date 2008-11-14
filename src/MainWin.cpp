@@ -266,12 +266,19 @@ void MainWin::compile() {
         dot->waitForStarted();
         dot->waitForFinished();
         QByteArray result=dot->readAllStandardError();
-        if (!result.isEmpty())
-            QMessageBox::warning(this, tr("Compilazione"), QString(result));
-        else
-            QMessageBox::information(this, tr("Compilazione"),
-                                     tr("Compilato con successo"));
-
+        if (result.isEmpty() && dot->error()==QProcess::UnknownError ){
+            QMessageBox::information(this, tr("Compilazione"), tr("Compilato con successo"));
+        }
+        else{
+            //errore di compilazione
+            if (!result.isEmpty()){
+                QMessageBox::warning(this, tr("Compilazione"), QString(result));
+            }
+            //errore dell'eseguibile
+            if (dot->error()!=QProcess::UnknownError){
+                QMessageBox::critical(this, tr("Compilazione"), tr("ERRORE: %1 non trovato").arg(basicCmd));
+            }
+        }
     } else
         QMessageBox::warning(
                 this,
