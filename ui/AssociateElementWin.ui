@@ -26,7 +26,7 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QGridLayout">
+      <layout class="QGridLayout" name="gridLayout_left">
        <item row="0" column="0">
         <widget class="QLineEdit" name="leftEditor"/>
        </item>
@@ -60,7 +60,7 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayout_center">
        <item row="0" column="0">
         <widget class="QPushButton" name="btn_arrow">
          <property name="text">
@@ -91,7 +91,7 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QGridLayout">
+      <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
         <widget class="QLineEdit" name="rightEditor"/>
        </item>

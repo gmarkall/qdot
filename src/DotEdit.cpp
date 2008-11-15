@@ -24,7 +24,7 @@ DotEdit::DotEdit(QWidget *parent):QTextEdit(parent){
     this->filename=QString("");
     this->saved=false;
     this->elements=new QList<DotElement>();
-    DotHighlight *highlight= new DotHighlight(this);
+    new DotHighlight(this);
     setTabStopWidth(8);
 }
 

@@ -325,7 +325,7 @@ void MainWin::compile() {
 
 void MainWin::view() {
     if (actualEditor!=NULL) {
-        QString dest=actualEditor->getFileName().left(actualEditor->getFileName().lastIndexOf("."));
+        QString dest=actualEditor->getFileName().left(QDir::toNativeSeparators(actualEditor->getFileName()).lastIndexOf("."));
         QDesktopServices::openUrl(QString("%1.%2").arg(dest).arg(destType));
     }
 }
