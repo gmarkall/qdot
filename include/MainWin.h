@@ -63,6 +63,7 @@ private slots:
     void openAddElementWindow();
     void openAssociateElementWindow();
     void addElementFromList(QListWidgetItem*);
+    void deleteSelectedElement();
 protected:
     void closeEvent(QCloseEvent *event);
 };

@@ -99,6 +99,10 @@ void MainWin::connectSignals() {
     connect(ui.actionSetGraphvizPath,SIGNAL(triggered()),this,SLOT(setGraphvizDir()));
     connect(ui.actAssociateElement,SIGNAL(triggered()),this,SLOT(openAssociateElementWindow()));
     connect(ui.elementsList,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(addElementFromList(QListWidgetItem*)));
+    //aggiungo il segnale di delete alla lista degli elementi
+    QAction *delElement=new QAction(tr("Elimina"),ui.elementsList);
+    ui.elementsList->addAction(delElement);
+    connect (delElement,SIGNAL(triggered()),this,SLOT(deleteSelectedElement()));
 }
 
 void MainWin::newFile() {
@@ -354,8 +358,9 @@ void MainWin::drawLine(){
 void MainWin::preamble(){
     if (actualEditor!=NULL){
         QTextCursor txtCur=actualEditor->textCursor();
-        txtCur.insertText("graph unix {\n node[color=lightblue2,style=filled];\n \n}");
+        txtCur.insertText("digraph unix {\n\tnode[color=lightblue2,style=filled];\n\t\n}");
         txtCur.movePosition(QTextCursor::PreviousBlock);
+        txtCur.movePosition(QTextCursor::EndOfBlock);
         actualEditor->setTextCursor(txtCur);
     }
 }
@@ -411,4 +416,15 @@ void MainWin::setGraphvizDir(){
     QString graphvizPath=QFileDialog::getExistingDirectory(this,tr("Graphviz bin directory"),"");
     setting.setValue("graphvizBinaryDir",graphvizPath);
     setting.endGroup();
+}
+
+void MainWin::deleteSelectedElement(){
+    qDebug()<<"del";
+    if (actualEditor!=NULL){
+        QListWidgetItem *it = ui.elementsList->currentItem();
+        if (it!=NULL){
+            actualEditor->getElements()->removeAll(DotElement(it->text()));
+            refreshElements();
+        }
+    }
 }

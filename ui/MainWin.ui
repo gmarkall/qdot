@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>803</width>
-    <height>1000</height>
+    <width>1000</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -63,7 +63,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>803</width>
+     <width>1000</width>
      <height>26</height>
     </rect>
    </property>
@@ -137,6 +137,12 @@ p, li { white-space: pre-wrap; }
     <size>
      <width>188</width>
      <height>343</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>524287</width>
+     <height>345</height>
     </size>
    </property>
    <property name="allowedAreas">
@@ -311,18 +317,6 @@ p, li { white-space: pre-wrap; }
    </widget>
   </widget>
   <widget class="QDockWidget" name="dock2">
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>524287</width>
-     <height>602</height>
-    </size>
-   </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea|Qt::TopDockWidgetArea</set>
    </property>
@@ -348,11 +342,11 @@ p, li { white-space: pre-wrap; }
        <layout class="QGridLayout" name="gridLayout">
         <item row="1" column="0">
          <widget class="QListWidget" name="elementsList">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>521</height>
-           </size>
+          <property name="contextMenuPolicy">
+           <enum>Qt::ActionsContextMenu</enum>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
           </property>
          </widget>
         </item>

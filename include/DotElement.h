@@ -21,7 +21,8 @@
 class DotElement : public QObject{
 	Q_OBJECT
 	public:
-		DotElement();
+                DotElement();
+                DotElement(QString name);
 		DotElement (const DotElement &);
 		void setName(QString name);
 		void setParameter(QString parameter);

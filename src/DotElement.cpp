@@ -20,6 +20,9 @@
 DotElement::DotElement():QObject(){
 
 }
+DotElement::DotElement(QString name):QObject(){
+        this->name=name;
+}
 
 DotElement::DotElement (const DotElement &cpy):QObject(){
 	this->name=cpy.name;
