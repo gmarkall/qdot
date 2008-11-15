@@ -329,7 +329,6 @@ void MainWin::view() {
 #ifdef Q_WS_WIN
         QString viewCmd=QString("file:///%1.%2").arg(dest).arg(destType);
         viewCmd.replace(' ',"%20");
-        QMessageBox::information(this,"",viewCmd);
         QDesktopServices::openUrl(viewCmd);
 #else
         QDesktopServices::openUrl(QString("%1.%2").arg(dest).arg(destType));
