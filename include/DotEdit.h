@@ -21,6 +21,7 @@
 #include <QFont>
 #include <QList>
 #include <QKeyEvent>
+#include <QCompleter>
 #include "DotElement.h"
 class DotEdit : public QTextEdit{
 	Q_OBJECT
@@ -31,12 +32,18 @@ public:
 	bool isSaved();
 	void setSaved(bool);
         QList<DotElement>* getElements();
+        void newLine();
 public slots:
-	void importElements();
+        void importElements();
+        void refreshCompleter();
 private:
 	QString filename;
 	bool saved;
         QList<DotElement> *elements;
+        QCompleter *completer;        
+private slots:
+        void insertCompletion(const QString&);
+        QString textUnderCursor();
 protected:
         void keyPressEvent(QKeyEvent *);
 };

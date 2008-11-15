@@ -18,6 +18,11 @@
 #include <QRegExp>
 #include <QDebug>
 #include <QTextBlock>
+#include <QAbstractItemView>
+#include <QScrollBar>
+#include <QStringList>
+#include <QListIterator>
+
 #include "DotHighlight.h"
 
 DotEdit::DotEdit(QWidget *parent):QTextEdit(parent){
@@ -26,6 +31,37 @@ DotEdit::DotEdit(QWidget *parent):QTextEdit(parent){
     this->elements=new QList<DotElement>();
     new DotHighlight(this);
     setTabStopWidth(8);
+    //autocompletition
+    this->completer=NULL;
+    refreshCompleter();
+}
+
+void DotEdit::refreshCompleter(){
+    if (this->completer!=NULL){
+        disconnect (completer,SIGNAL(activated(const QString&)),this,SLOT(insertCompletion(const QString&)));
+    }
+    QStringList wordList;
+    wordList<<"digraph"<<"graph"<<"node";
+    //aggiungo alla wordlist gli elementi
+    QListIterator<DotElement> it(*this->elements);
+    while (it.hasNext()){
+        DotElement elem=it.next();
+        wordList<<elem.getName();
+    }
+
+    this->completer=new QCompleter(wordList,this);
+    completer->setWidget(this);
+    completer->setCompletionMode(QCompleter::PopupCompletion);
+    completer->setCaseSensitivity(Qt::CaseSensitive);
+    connect (completer,SIGNAL(activated(const QString&)),this,SLOT(insertCompletion(const QString&)));
+}
+
+void DotEdit::insertCompletion(const QString &text){
+    QTextCursor cur= textCursor();
+    int dimextra=text.length()- this->completer->completionPrefix().length();
+    cur.movePosition(QTextCursor::Left);
+    cur.movePosition(QTextCursor::EndOfWord);
+    cur.insertText(text.right(dimextra));
 }
 
 void DotEdit::setFileName(QString filename){
@@ -63,19 +99,79 @@ void DotEdit::importElements(){
         }
         pos+=elementsExp.matchedLength();
     }
+    refreshCompleter();
+}
+
+QString DotEdit::textUnderCursor(){
+    QTextCursor cur=textCursor();
+    cur.select(QTextCursor::WordUnderCursor);
+    QString selText=cur.selectedText();
+    if (selText.left(1)=="\"")
+    {
+        selText=selText.right(selText.length()-1);
+    }
+    return selText;
 }
 
 void DotEdit::keyPressEvent(QKeyEvent *e){
-    int ntab=0;
-    if (e->key()==Qt::Key_Return){
-        QTextBlock prev=textCursor().block();
-        QRegExp tabExp("^\\t*");
-        prev.text().indexOf(tabExp);
-        ntab=tabExp.matchedLength();
-        qDebug()<< ntab;
+    //AUTO COMPLETAMENTO
+    if (this->completer && this->completer->popup()->isVisible()){
+        switch (e->key()) {
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+        case Qt::Key_Escape:
+        case Qt::Key_Tab:
+        case Qt::Key_Backtab:
+            e->ignore();
+            return; // let the completer do default behavior
+        default:
+            break;
+        }
     }
-    QTextEdit::keyPressEvent(e);
-    for (int i=0;i<ntab;i++){
-        this->insertPlainText("\t");
+    bool isShortcut = ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_E); // CTRL+E
+    if (!this->completer|| !isShortcut){
+        //INDENTAZIONE
+        int ntab=0;
+        if (e->key()==Qt::Key_Return){
+            QTextBlock prev=textCursor().block();
+            QRegExp tabExp("^\\t*");
+            prev.text().indexOf(tabExp);
+            ntab=tabExp.matchedLength();
+        }
+        QTextEdit::keyPressEvent(e);
+        for (int i=0;i<ntab;i++){
+            this->insertPlainText("\t");
+        }
     }
+    //AutoCompletamento
+    const bool ctrlOrShift = e->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier);
+    if (!completer || (ctrlOrShift && e->text().isEmpty()))
+        return;
+
+    static QString eow("~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-="); // end of word
+    bool hasModifier = (e->modifiers() != Qt::NoModifier) && !ctrlOrShift;
+    QString completionPrefix = textUnderCursor();
+
+    if (!isShortcut && (hasModifier || e->text().isEmpty()|| completionPrefix.length() < 3
+                        || eow.contains(e->text().right(1)))) {
+        completer->popup()->hide();
+        return;
+    }
+
+    if (completionPrefix != completer->completionPrefix()) {
+        completer->setCompletionPrefix(completionPrefix);
+        completer->popup()->setCurrentIndex(completer->completionModel()->index(0, 0));
+    }
+    QRect cr = cursorRect();
+    cr.setWidth(completer->popup()->sizeHintForColumn(0)
+                + completer->popup()->verticalScrollBar()->sizeHint().width());
+    completer->complete(cr); // popup it up!
+
+}
+
+void DotEdit::newLine(){
+    QTextCursor cur=textCursor();
+    cur.movePosition(QTextCursor::EndOfLine);
+    setTextCursor(cur);
+    keyPressEvent(new QKeyEvent(QEvent::KeyPress,Qt::Key_Return,Qt::NoModifier));
 }

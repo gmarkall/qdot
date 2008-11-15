@@ -141,7 +141,6 @@ bool MainWin::closeFile() {
             DotEdit *tmp=actualEditor;
             ui.mainTab->removeTab(ui.mainTab->currentIndex());
             dotEdits.removeAll(tmp);
-            delete tmp;
         }
     }
     return okChiudi;
@@ -297,7 +296,6 @@ void MainWin::compile() {
         dot->waitForStarted();
         dot->waitForFinished();
         QByteArray result=dot->readAllStandardError();
-        qDebug()<< result;
         if (result.isEmpty() && dot->error()==QProcess::UnknownError ){
             setCompilationState(0);
             QMessageBox::information(this, tr("Compilazione"), tr("Compilato con successo"));
@@ -413,7 +411,9 @@ void MainWin::refreshElements()
             DotElement elem = it.next();
             ui.elementsList->addItem(elem.getName());
         }
+        actualEditor->refreshCompleter();
     }
+
 }
 
 void MainWin::openAssociateElementWindow(){
@@ -447,7 +447,6 @@ void MainWin::setGraphvizDir(){
 }
 
 void MainWin::deleteSelectedElement(){
-    qDebug()<<"del";
     if (actualEditor!=NULL){
         QListWidgetItem *it = ui.elementsList->currentItem();
         if (it!=NULL){

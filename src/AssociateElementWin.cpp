@@ -54,7 +54,8 @@ void AssociateElementWin::arrowConnect(){
     QListWidgetItem *left=ui.leftList->currentItem();
     QListWidgetItem *right=ui.rightList->currentItem();
     if (left!=NULL && right!=NULL){
-        editor->insertPlainText(QString(" \"%1\" -> \"%2\";\n").arg(left->text()).arg(right->text()));
+        editor->newLine();
+        editor->insertPlainText(QString(" \"%1\" -> \"%2\";").arg(left->text()).arg(right->text()));
     }
 }
 
@@ -62,7 +63,8 @@ void AssociateElementWin::lineConnect(){
     QListWidgetItem *left=ui.leftList->currentItem();
     QListWidgetItem *right=ui.rightList->currentItem();
     if (left!=NULL && right!=NULL){
-        editor->insertPlainText(QString(" \"%1\" -- \"%2\";\n").arg(left->text()).arg(right->text()));
+        editor->newLine();
+        editor->insertPlainText(QString(" \"%1\" -- \"%2\";").arg(left->text()).arg(right->text()));
     }
 }
 
