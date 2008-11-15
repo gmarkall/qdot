@@ -33,6 +33,8 @@
 #include <QCoreApplication>
 #include <QWindowsVistaStyle>
 #include <QPlastiqueStyle>
+#include <QIcon>
+#include <QPainter>
 
 MainWin::MainWin() : QMainWindow() {
     //Settaggi di sistema
@@ -73,6 +75,7 @@ MainWin::MainWin() : QMainWindow() {
 #else
     QApplication::setStyle(new QPlastiqueStyle);
 #endif
+    setCompilationState(-1);
 }
 
 void MainWin::connectSignals() {
@@ -100,7 +103,8 @@ void MainWin::connectSignals() {
     connect(ui.actAssociateElement,SIGNAL(triggered()),this,SLOT(openAssociateElementWindow()));
     connect(ui.elementsList,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(addElementFromList(QListWidgetItem*)));
     //aggiungo il segnale di delete alla lista degli elementi
-    QAction *delElement=new QAction(tr("Elimina"),ui.elementsList);
+
+    QAction *delElement=new QAction(QIcon(":/images/del.png"),tr("Elimina"),ui.elementsList);
     ui.elementsList->addAction(delElement);
     connect (delElement,SIGNAL(triggered()),this,SLOT(deleteSelectedElement()));
 }
@@ -248,6 +252,18 @@ void MainWin::refreshBasicDirPath(QString fname) {
     basicDirPath=tm.filePath(fname);
 }
 
+/*
+  Cambia il colore del led sulla sinistra in base allo stato
+  -1->led blue
+  0 ->led verde
+  1 ->led arancione
+  2 ->led rosso
+*/
+void MainWin::setCompilationState(int state){
+    ui.ledFrame->setState(state);
+    ui.ledFrame->repaint();
+}
+
 void MainWin::compile() {
     QSettings setting;
     if (actualEditor!=NULL && !actualEditor->getFileName().isEmpty()) {
@@ -281,24 +297,30 @@ void MainWin::compile() {
         dot->waitForStarted();
         dot->waitForFinished();
         QByteArray result=dot->readAllStandardError();
+        qDebug()<< result;
         if (result.isEmpty() && dot->error()==QProcess::UnknownError ){
+            setCompilationState(0);
             QMessageBox::information(this, tr("Compilazione"), tr("Compilato con successo"));
         }
         else{
             //errore di compilazione
             if (!result.isEmpty()){
+                setCompilationState(1);
                 QMessageBox::warning(this, tr("Compilazione"), QString(result));
             }
             //errore dell'eseguibile
             if (dot->error()!=QProcess::UnknownError){
+                setCompilationState(2);
                 QMessageBox::critical(this, tr("Compilazione"), tr("ERRORE: %1 non trovato").arg(basicCmd));
             }
         }
-    } else
+    } else{
+        setCompilationState(1);
         QMessageBox::warning(
                 this,
                 tr("Compilazione"),
-                tr("Non posso compilare un file non salvato.\nAlberto Diavolo bestia SALVA!"));
+                tr("Non posso compilare un file non salvato."));
+    }
 }
 
 void MainWin::view() {

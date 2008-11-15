@@ -10,7 +10,7 @@ DEPENDPATH += . \
 INCLUDEPATH += . \
     include
 CONFIG += qt \
-    debug
+    release
 MOC_DIR = tmp/
 UI_DIR = tmp
 UI_HEADERS_DIR = tmp
@@ -23,7 +23,8 @@ HEADERS += include/DotEdit.h \
     include/DotElement.h \
     include/AddElementWin.h \
     include/AssociateElementWin.h \
-    include/DotHighlight.h
+    include/DotHighlight.h \
+    include/LedFrame.h
 FORMS += ui/MainWin.ui \
     ui/About.ui \
     ui/AddElementWin.ui \
@@ -34,5 +35,7 @@ SOURCES += src/DotEdit.cpp \
     src/DotElement.cpp \
     src/AddElementWin.cpp \
     src/AssociateElementWin.cpp \
-    src/DotHighlight.cpp
+    src/DotHighlight.cpp \
+    src/LedFrame.cpp
 RESOURCES += resource.qrc
+RC_FILE += QDot.rc

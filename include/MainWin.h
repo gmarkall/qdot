@@ -37,6 +37,7 @@ private:
     QString basicDirPath;
     void refreshBasicDirPath(QString);
     int zoom;
+    void setCompilationState(int state);
 public:
     MainWin();
 public slots:

@@ -1,6 +1,27 @@
 <RCC>
     <qresource prefix="/images" >
+        <file>images/add.png</file>
+        <file>images/associate.png</file>
+        <file alias="close.png" >images/close.png</file>
+        <file alias="compile.png" >images/compile.png</file>
+        <file>images/configure.png</file>
+        <file alias="del.png" >images/del.png</file>
+        <file>images/exit.png</file>
         <file>images/icon.png</file>
+        <file alias="ledblue.png" >images/ledblue.png</file>
+        <file alias="ledgreen.png" >images/ledgreen.png</file>
+        <file alias="ledorange.png" >images/ledorange.png</file>
+        <file alias="ledred.png" >images/ledred.png</file>
         <file alias="logo" >images/logo.png</file>
+        <file alias="new.png" >images/new.png</file>
+        <file>images/next.png</file>
+        <file alias="open.png" >images/open.png</file>
+        <file alias="preamble.png" >images/preamble.png</file>
+        <file>images/prev.png</file>
+        <file>images/save.png</file>
+        <file>images/saveas.png</file>
+        <file>images/view.png</file>
+        <file>images/zoomIn.png</file>
+        <file>images/zoomOut.png</file>
     </qresource>
 </RCC>
