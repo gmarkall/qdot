@@ -24,11 +24,13 @@ HEADERS += include/DotEdit.h \
     include/AddElementWin.h \
     include/AssociateElementWin.h \
     include/DotHighlight.h \
-    include/LedFrame.h
+    include/LedFrame.h \
+    include/SettingsWin.h
 FORMS += ui/MainWin.ui \
     ui/About.ui \
     ui/AddElementWin.ui \
-    ui/AssociateElementWin.ui
+    ui/AssociateElementWin.ui \
+    ui/SettingsWin.ui
 SOURCES += src/DotEdit.cpp \
     src/main.cpp \
     src/MainWin.cpp \
@@ -36,6 +38,7 @@ SOURCES += src/DotEdit.cpp \
     src/AddElementWin.cpp \
     src/AssociateElementWin.cpp \
     src/DotHighlight.cpp \
-    src/LedFrame.cpp
+    src/LedFrame.cpp \
+    src/SettingsWin.cpp
 RESOURCES += resource.qrc
 RC_FILE += QDot.rc

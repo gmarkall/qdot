@@ -20,6 +20,7 @@
 #include <QMainWindow>
 #include <QSet>
 #include <QProcess>
+#include <QSettings>
 #include "ui_MainWin.h"
 #include "ui_About.h"
 #include "DotEdit.h"
@@ -38,6 +39,8 @@ private:
     void refreshBasicDirPath(QString);
     int zoom;
     void setCompilationState(int state);
+    void readSettings();
+    QSettings *setting;
 public:
     MainWin();
 public slots:
@@ -54,7 +57,7 @@ public slots:
     void refreshElements();
     void nextTab();
     void prevTab();
-    void setGraphvizDir();
+    void openSettingsWindow();
 private slots:
     void fileChange();
     void about();

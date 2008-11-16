@@ -35,18 +35,19 @@
 #include <QPlastiqueStyle>
 #include <QIcon>
 #include <QPainter>
+#include "SettingsWin.h"
 
 MainWin::MainWin() : QMainWindow() {
     //Settaggi di sistema
     QCoreApplication::setOrganizationName("MZTech");
     QCoreApplication::setApplicationName("QDot");
     QCoreApplication::setOrganizationDomain("mztech.info");
-    QSettings setting;
-    setting.beginGroup("Application");
-    if(!setting.contains("graphvizBinaryDir")){
-        setGraphvizDir();
+    this->setting=new QSettings();
+    setting->beginGroup("Application");
+    if(!setting->contains("graphvizBinaryDir")){
+        openSettingsWindow();
     }
-    setting.endGroup();
+    setting->endGroup();
 
     dotEdits.clear(); //Svuoto la lista degli editor aperti
     actualEditor=NULL;
@@ -76,6 +77,14 @@ MainWin::MainWin() : QMainWindow() {
     QApplication::setStyle(new QPlastiqueStyle);
 #endif
     setCompilationState(-1);
+    readSettings();
+
+}
+
+void MainWin::readSettings(){
+    QFont appfnt;
+    appfnt.fromString(setting->value("Application/applicationFont","Luxi Sans,-1,12,5,50,0,0,0,0,0").toString());
+    QApplication::setFont(appfnt);
 }
 
 void MainWin::connectSignals() {
@@ -99,7 +108,7 @@ void MainWin::connectSignals() {
     connect(ui.btnView,SIGNAL(clicked()),this,SLOT(view()));
     connect(ui.actionPreamble,SIGNAL(triggered()),this,SLOT(preamble()));
     connect(ui.actAddElement,SIGNAL(triggered()),this,SLOT(openAddElementWindow()));
-    connect(ui.actionSetGraphvizPath,SIGNAL(triggered()),this,SLOT(setGraphvizDir()));
+    connect(ui.actionSettings,SIGNAL(triggered()),this,SLOT(openSettingsWindow()));
     connect(ui.actAssociateElement,SIGNAL(triggered()),this,SLOT(openAssociateElementWindow()));
     connect(ui.elementsList,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(addElementFromList(QListWidgetItem*)));
     //aggiungo il segnale di delete alla lista degli elementi
@@ -116,6 +125,9 @@ void MainWin::newFile() {
     ui.mainTab->setCurrentWidget(actualEditor);
     if (this->zoom > 0 )
         actualEditor->zoomIn(this->zoom);
+    QFont fnt;
+    fnt.fromString(setting->value("Application/font").toString());
+    actualEditor->setFont(fnt);
 }
 
 bool MainWin::closeFile() {
@@ -224,6 +236,11 @@ void MainWin::changeEditor(int index) {
             disconnect(actualEditor, SIGNAL(textChanged()), this,
                        SLOT(fileChange()));
             actualEditor=(DotEdit*)ui.mainTab->currentWidget();
+            //gli risetto il font nel caso sia stato cambiato dalle impostazioni
+            QFont fnt;
+            fnt.fromString(setting->value("Application/font").toString());
+            actualEditor->setFont(fnt);
+
             actualEditor->setFocus();
             connect(actualEditor, SIGNAL(textChanged()), this,
                     SLOT(fileChange()));        
@@ -264,14 +281,13 @@ void MainWin::setCompilationState(int state){
 }
 
 void MainWin::compile() {
-    QSettings setting;
     if (actualEditor!=NULL && !actualEditor->getFileName().isEmpty()) {
         QProcess *dot=new QProcess(this);
         QString dest=actualEditor->getFileName().left(actualEditor->getFileName().lastIndexOf("."));
 
 #ifdef Q_WS_WIN
         QString basicCmd=QString("%1\\%2.exe")
-                         .arg(setting.value("Application/graphvizBinaryDir").toString())
+                         .arg(setting->value("Application/graphvizBinaryDir").toString())
                          .arg(ui.cmbEngine->currentText());
         QStringList env = QProcess::systemEnvironment();
         dot->setEnvironment(env);
@@ -283,7 +299,7 @@ void MainWin::compile() {
                     .arg(ui.edtWidth->value()).arg(ui.edtHeight->value());
 #else
         QString basicCmd=QString("%1%2")
-                         .arg(setting.value("Application/graphvizBinaryDir").toString())
+                         .arg(setting->value("Application/graphvizBinaryDir").toString())
                          .arg(ui.cmbEngine->currentText());
         QString cmd=QString("%1 -T%2  %3 -o %4.%5 -Gsize=\"%6,%7\" ")
                     .arg(basicCmd)
@@ -438,12 +454,9 @@ void MainWin::prevTab(){
     ui.mainTab->setCurrentIndex(ui.mainTab->currentIndex()-1);
 }
 
-void MainWin::setGraphvizDir(){
-    QSettings setting;
-    setting.beginGroup("Application");
-    QString graphvizPath=QFileDialog::getExistingDirectory(this,tr("Graphviz bin directory"),"");
-    setting.setValue("graphvizBinaryDir",graphvizPath);
-    setting.endGroup();
+void MainWin::openSettingsWindow(){
+    SettingsWin *win = new SettingsWin(this);
+    win->show();
 }
 
 void MainWin::deleteSelectedElement(){

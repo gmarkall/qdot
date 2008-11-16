@@ -59,8 +59,8 @@ void DotEdit::refreshCompleter(){
 void DotEdit::insertCompletion(const QString &text){
     QTextCursor cur= textCursor();
     int dimextra=text.length()- this->completer->completionPrefix().length();
-    cur.movePosition(QTextCursor::Left);
-    cur.movePosition(QTextCursor::EndOfWord);
+    /*cur.movePosition(QTextCursor::Left);
+    cur.movePosition(QTextCursor::EndOfWord);*/
     cur.insertText(text.right(dimextra));
 }
 
@@ -110,6 +110,10 @@ QString DotEdit::textUnderCursor(){
     {
         selText=selText.right(selText.length()-1);
     }
+    if (selText.right(1)=="\"")
+    {
+        selText=selText.left(selText.length()-1);
+    }
     return selText;
 }
 
@@ -128,7 +132,7 @@ void DotEdit::keyPressEvent(QKeyEvent *e){
             break;
         }
     }
-    bool isShortcut = ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_E); // CTRL+E
+    bool isShortcut = ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_Space); // CTRL+SPACE
     if (!this->completer|| !isShortcut){
         //INDENTAZIONE
         int ntab=0;
