@@ -286,8 +286,8 @@ void MainWin::compile() {
         QString dest=actualEditor->getFileName().left(actualEditor->getFileName().lastIndexOf("."));
 
 #ifdef Q_WS_WIN
-        QString basicCmd=QString("%1\\%2.exe")
-                         .arg(setting->value("Application/graphvizBinaryDir").toString())
+        QString basicCmd=QString("\"%1\\%2.exe\"")
+                         .arg(QDir::toNativeSeparators(setting->value("Application/graphvizBinaryDir").toString()))
                          .arg(ui.cmbEngine->currentText());
         QStringList env = QProcess::systemEnvironment();
         dot->setEnvironment(env);
