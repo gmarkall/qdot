@@ -112,10 +112,13 @@ void MainWin::connectSignals() {
     connect(ui.actAssociateElement,SIGNAL(triggered()),this,SLOT(openAssociateElementWindow()));
     connect(ui.elementsList,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(addElementFromList(QListWidgetItem*)));
     //aggiungo il segnale di delete alla lista degli elementi
-
+    QAction *modElement=new QAction(QIcon(":/images/edit.png"),tr("Modifica"),ui.elementsList);
     QAction *delElement=new QAction(QIcon(":/images/del.png"),tr("Elimina"),ui.elementsList);
+    ui.elementsList->addAction(modElement);
     ui.elementsList->addAction(delElement);
     connect (delElement,SIGNAL(triggered()),this,SLOT(deleteSelectedElement()));
+    connect (modElement,SIGNAL(triggered()),this,SLOT(editActualElement()));
+    connect (ui.elementsList,SIGNAL(itemChanged(QListWidgetItem*)),this,SLOT(endEditActualElement(QListWidgetItem *)));
 }
 
 void MainWin::newFile() {
@@ -243,7 +246,7 @@ void MainWin::changeEditor(int index) {
 
             actualEditor->setFocus();
             connect(actualEditor, SIGNAL(textChanged()), this,
-                    SLOT(fileChange()));        
+                    SLOT(fileChange()));
         }
     } else {
         actualEditor=NULL;
@@ -468,3 +471,34 @@ void MainWin::deleteSelectedElement(){
         }
     }
 }
+
+/**
+*  RINOMINA
+*/
+void MainWin::editActualElement(){
+
+    ui.elementsList->openPersistentEditor(ui.elementsList->currentItem());
+    editItemString=ui.elementsList->currentItem()->text();
+}
+
+void MainWin::endEditActualElement(QListWidgetItem *it){
+    ui.elementsList->closePersistentEditor(it);
+    if (actualEditor!=NULL && !editItemString.isEmpty()){
+        QList<DotElement>* lst=actualEditor->getElements();
+        //recupero la posizione dell'elemento nella lista
+        int i=lst->indexOf(DotElement(editItemString));
+        //copio l'elemento per non perdere i dati
+        DotElement el=lst->at(i);
+        //rimozione elemento dalla lista
+        lst->removeAt(i);
+        el.setName(it->text());
+        //reinserimento in posizione
+        lst->insert(i,el);
+        QString actualText=actualEditor->toPlainText();
+        actualText.replace(QRegExp(QString("\"%1\"").arg(editItemString),Qt::CaseInsensitive),QString("\"%1\"").arg(it->text()));
+        actualEditor->setPlainText(actualText);
+        editItemString="";
+        refreshElements();
+    }
+}
+

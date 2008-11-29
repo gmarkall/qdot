@@ -87,7 +87,7 @@ QList<DotElement>* DotEdit::getElements(){
 }
 
 void DotEdit::importElements(){
-    QRegExp elementsExp("\"[a-z0-9A-Z]*\"");
+    QRegExp elementsExp("\"[a-z0-9A-Z ]*\"");
     QString allText=this->toPlainText();
     int pos=0;
     while ((pos=elementsExp.indexIn(allText,pos))!=-1){

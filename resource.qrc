@@ -6,6 +6,7 @@
         <file alias="compile.png" >images/compile.png</file>
         <file>images/configure.png</file>
         <file alias="del.png" >images/del.png</file>
+        <file alias="edit.png" >images/edit.png</file>
         <file>images/exit.png</file>
         <file>images/icon.png</file>
         <file alias="ledblue.png" >images/ledblue.png</file>

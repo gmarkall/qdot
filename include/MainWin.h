@@ -41,6 +41,7 @@ private:
     void setCompilationState(int state);
     void readSettings();
     QSettings *setting;
+    QString editItemString;
 public:
     MainWin();
 public slots:
@@ -58,6 +59,9 @@ public slots:
     void nextTab();
     void prevTab();
     void openSettingsWindow();
+    void editActualElement();
+    void endEditActualElement(QListWidgetItem *it);
+
 private slots:
     void fileChange();
     void about();
