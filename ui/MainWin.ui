@@ -190,12 +190,12 @@ p, li { white-space: pre-wrap; }
             </property>
             <item>
              <property name="text">
-              <string>dot</string>
+              <string extracomment="dot">dot</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>neato</string>
+              <string extracomment="neato">neato</string>
              </property>
             </item>
             <item>
