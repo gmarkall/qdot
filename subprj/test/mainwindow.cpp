@@ -11,7 +11,7 @@ MainWindow::MainWindow(){
         QAccessibleWidget *mainWi = new QAccessibleWidget(this,QAccessible::Window,tr("ciao"));
         this->setCentralWidget(edt);
         mywidget *wid=new mywidget(edt);
-        //QAccessible::queryAccessibleInterface(edt);
+        QAccessible::queryAccessibleInterface(this);
         if (QAccessible::isActive()){
                 QMessageBox::information(this,tr("OK"),tr("OK"));
         }
