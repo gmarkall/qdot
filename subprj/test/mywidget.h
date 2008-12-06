@@ -6,7 +6,7 @@
 class mywidget : public QAccessibleWidget
 {
 public:
-    mywidget(QWidget *parent, Role role=QAccessible::Client, const QString &name=QString());
+    mywidget(QWidget *parent, Role role=QAccessible::EditableText, const QString &name=QString());
 };
 
 #endif // MYWIDGET_H
