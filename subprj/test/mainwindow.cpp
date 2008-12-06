@@ -8,9 +8,10 @@ MainWindow::MainWindow(){
         resize(800,600);
         this->setWindowTitle("Accessibility test");
         QLineEdit *edt=new QLineEdit(this);
+        QAccessibleWidget *mainWi = new QAccessibleWidget(this,QAccessible::Window,tr("ciao"));
         this->setCentralWidget(edt);
         mywidget *wid=new mywidget(edt);
-        QAccessible::queryAccessibleInterface(edt);
+        //QAccessible::queryAccessibleInterface(edt);
         if (QAccessible::isActive()){
                 QMessageBox::information(this,tr("OK"),tr("OK"));
         }
