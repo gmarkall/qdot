@@ -301,7 +301,7 @@ void MainWin::compile() {
                     .arg(QDir::toNativeSeparators(dest)).arg(destType)
                     .arg(ui.edtWidth->value()).arg(ui.edtHeight->value());
 #else
-        QString basicCmd=QString("%1%2")
+        QString basicCmd=QString("%1/%2")
                          .arg(setting->value("Application/graphvizBinaryDir").toString())
                          .arg(ui.cmbEngine->currentText());
         QString cmd=QString("%1 -T%2  %3 -o %4.%5 -Gsize=\"%6,%7\" ")
