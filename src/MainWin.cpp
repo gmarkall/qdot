@@ -238,16 +238,16 @@ void MainWin::changeEditor(int index) {
         if (actualEditor!=NULL) {
             disconnect(actualEditor, SIGNAL(textChanged()), this,
                        SLOT(fileChange()));
-            actualEditor=(DotEdit*)ui.mainTab->currentWidget();
-            //gli risetto il font nel caso sia stato cambiato dalle impostazioni
-            QFont fnt;
-            fnt.fromString(setting->value("Application/font").toString());
-            actualEditor->setFont(fnt);
-
-            actualEditor->setFocus();
-            connect(actualEditor, SIGNAL(textChanged()), this,
-                    SLOT(fileChange()));
         }
+        actualEditor=(DotEdit*)ui.mainTab->currentWidget();
+        //Reset the font
+        QFont fnt;
+        fnt.fromString(setting->value("Application/font").toString());
+        actualEditor->setFont(fnt);
+
+        actualEditor->setFocus();
+        connect(actualEditor, SIGNAL(textChanged()), this,
+                SLOT(fileChange()));
     } else {
         actualEditor=NULL;
     }
