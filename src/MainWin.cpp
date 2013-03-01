@@ -112,8 +112,8 @@ void MainWin::connectSignals() {
     connect(ui.actAssociateElement,SIGNAL(triggered()),this,SLOT(openAssociateElementWindow()));
     connect(ui.elementsList,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(addElementFromList(QListWidgetItem*)));
     //aggiungo il segnale di delete alla lista degli elementi
-    QAction *modElement=new QAction(QIcon(":/images/edit.png"),tr("Modifica"),ui.elementsList);
-    QAction *delElement=new QAction(QIcon(":/images/del.png"),tr("Elimina"),ui.elementsList);
+    QAction *modElement=new QAction(QIcon(":/images/edit.png"),tr("Modify"),ui.elementsList);
+    QAction *delElement=new QAction(QIcon(":/images/del.png"),tr("Delete"),ui.elementsList);
     ui.elementsList->addAction(modElement);
     ui.elementsList->addAction(delElement);
     connect (delElement,SIGNAL(triggered()),this,SLOT(deleteSelectedElement()));
@@ -124,7 +124,7 @@ void MainWin::connectSignals() {
 void MainWin::newFile() {
     actualEditor=new DotEdit(this);
     dotEdits << actualEditor;
-    ui.mainTab->addTab(actualEditor, tr("SenzaNome"));
+    ui.mainTab->addTab(actualEditor, tr("Untitled"));
     ui.mainTab->setCurrentWidget(actualEditor);
     if (this->zoom > 0 )
         actualEditor->zoomIn(this->zoom);
@@ -140,8 +140,8 @@ bool MainWin::closeFile() {
             QMessageBox::StandardButton
                     res =QMessageBox::question(
                             this,
-                            tr("File Non salvato"),
-                            tr("Vuoi salvare il file %1 ?").arg(actualEditor->getFileName()),
+                            tr("File not saved"),
+                            tr("Do you want to save the file %1 ?").arg(actualEditor->getFileName()),
                             QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
             if (res==QMessageBox::Yes) {
                 save();
@@ -169,8 +169,8 @@ void MainWin::save() {
         if (f.write(actualEditor->toPlainText().toAscii())>-1) {
             actualEditor->setSaved(true);
         } else
-            QMessageBox::critical(this, tr("Salvataggio File"),
-                                  tr("Errore di salvataggio file"));
+            QMessageBox::critical(this, tr("Saving File"),
+                                  tr("Error saving file"));
         f.close();
         fileChange();
     } else {
@@ -182,7 +182,7 @@ void MainWin::save() {
 void MainWin::saveAs() {
     if (actualEditor!=NULL) {
         QString tmpFilename= QFileDialog::getSaveFileName(this,
-                                                          tr("Salva con nome"), basicDirPath, tr("Dot Files(*.dot)"));
+                                                          tr("Save as"), basicDirPath, tr("Dot Files(*.dot)"));
         refreshBasicDirPath(tmpFilename);
         if (!tmpFilename.isEmpty()) {
             QFile f(tmpFilename);
@@ -194,15 +194,15 @@ void MainWin::saveAs() {
                 ui.mainTab->setTabText(ui.mainTab->currentIndex(),
                                        finfo.fileName());
             } else
-                QMessageBox::critical(this, tr("Salvataggio File"),
-                                      tr("Errore di salvataggio file"));
+                QMessageBox::critical(this, tr("Save file"),
+                                      tr("Error saving file"));
             f.close();
         }
     }
 }
 
 void MainWin::open() {
-    QString tmpFilename= QFileDialog::getOpenFileName(this, tr("Apri"),
+    QString tmpFilename= QFileDialog::getOpenFileName(this, tr("Open"),
                                                       basicDirPath, tr("Dot Files(*.dot)"));
     if (!tmpFilename.isEmpty()) {
         //l'utente ha scelto il nome e NON ha premuto ANNULLA
@@ -229,7 +229,7 @@ void MainWin::open() {
             actualEditor->importElements();
             refreshElements();
         } else
-            QMessageBox::warning(this, tr("Apri"), tr("File gia' aperto"));
+            QMessageBox::warning(this, tr("Open"), tr("File already open"));
     }
 }
 
@@ -317,26 +317,26 @@ void MainWin::compile() {
         QByteArray result=dot->readAllStandardError();
         if (result.isEmpty() && dot->error()==QProcess::UnknownError ){
             setCompilationState(0);
-            QMessageBox::information(this, tr("Compilazione"), tr("Compilato con successo"));
+            QMessageBox::information(this, tr("Compilation"), tr("Compilation successful"));
         }
         else{
             //errore di compilazione
             if (!result.isEmpty()){
                 setCompilationState(1);
-                QMessageBox::warning(this, tr("Compilazione"), QString(result));
+                QMessageBox::warning(this, tr("Compilation"), QString(result));
             }
             //errore dell'eseguibile
             if (dot->error()!=QProcess::UnknownError){
                 setCompilationState(2);
-                QMessageBox::critical(this, tr("Compilazione"), tr("ERRORE: %1 non trovato").arg(basicCmd));
+                QMessageBox::critical(this, tr("Compilation"), tr("ERROR: %1 not found").arg(basicCmd));
             }
         }
     } else{
         setCompilationState(1);
         QMessageBox::warning(
                 this,
-                tr("Compilazione"),
-                tr("Non posso compilare un file non salvato."));
+                tr("Compilation"),
+                tr("Can't compile an unsaved file."));
     }
 }
 

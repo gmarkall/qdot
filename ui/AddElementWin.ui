@@ -10,13 +10,13 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Aggiungi Elemento</string>
+   <string>Add Element</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2" >
    <item row="0" column="0" >
     <widget class="QLabel" name="label" >
      <property name="text" >
-      <string>Nome:</string>
+      <string>Name:</string>
      </property>
     </widget>
    </item>
@@ -26,7 +26,7 @@
    <item row="2" column="0" >
     <widget class="QLabel" name="label_2" >
      <property name="text" >
-      <string>Parametri</string>
+      <string>Parameters</string>
      </property>
     </widget>
    </item>
@@ -55,14 +55,14 @@
      <item row="0" column="0" >
       <widget class="QPushButton" name="btnAdd" >
        <property name="text" >
-        <string>Aggiungi</string>
+        <string>Add</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1" >
       <widget class="QPushButton" name="btnCancel" >
        <property name="text" >
-        <string>Annulla</string>
+        <string>Cancel</string>
        </property>
       </widget>
      </item>
