@@ -205,31 +205,27 @@ void MainWin::open() {
     QString tmpFilename= QFileDialog::getOpenFileName(this, tr("Open"),
                                                       basicDirPath, tr("Dot Files(*.dot)"));
     if (!tmpFilename.isEmpty()) {
-        //l'utente ha scelto il nome e NON ha premuto ANNULLA
+        // The user has chosen the name and not pressed cancel
         refreshBasicDirPath(tmpFilename);
-        //controllo che non sia gia' aperto scorrendo la lista
-        bool exist=false;
+        // If the file is already open, go to the tab it's in
         for (int i=0; i<dotEdits.size(); i++) {
             if (dotEdits.at(i)->getFileName()==tmpFilename) {
-                exist=true;
-                break;
+                ui.mainTab->setCurrentIndex(i+1); // First tab is "Welcome"
+                return;
             }
         }
-        if (!exist) {
-            newFile(); //creo la nuova scheda
-            QFile f(tmpFilename);
-            f.open(QIODevice::ReadOnly); //apro il file
-            actualEditor->setPlainText(f.readAll()); //riempio la scheda con il contenuto del file
-            f.close(); //chiusura file
-            actualEditor->setFileName(tmpFilename); //cambio il nome del file nell'editor
-            actualEditor->setSaved(true);
-            QFileInfo finfo(f);
-            ui.mainTab->setTabText(ui.mainTab->currentIndex(), finfo.fileName()); //cambio il nome del path nella tab
-            //carico gli elementi già presenti
-            actualEditor->importElements();
-            refreshElements();
-        } else
-            QMessageBox::warning(this, tr("Open"), tr("File already open"));
+        newFile(); //creo la nuova scheda
+        QFile f(tmpFilename);
+        f.open(QIODevice::ReadOnly); //apro il file
+        actualEditor->setPlainText(f.readAll()); //riempio la scheda con il contenuto del file
+        f.close(); //chiusura file
+        actualEditor->setFileName(tmpFilename); //cambio il nome del file nell'editor
+        actualEditor->setSaved(true);
+        QFileInfo finfo(f);
+        ui.mainTab->setTabText(ui.mainTab->currentIndex(), finfo.fileName()); //cambio il nome del path nella tab
+        //carico gli elementi già presenti
+        actualEditor->importElements();
+        refreshElements();
     }
 }
 
