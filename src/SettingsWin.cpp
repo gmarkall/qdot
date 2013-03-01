@@ -18,12 +18,12 @@ void SettingsWin::readSettings(){
     //FONT
     QFont fnt;
     fnt.fromString(setting.value("Application/font","Luxi Sans,-1,12,5,50,0,0,0,0,0").toString());
-    ui.cmbFontName->setFont(fnt);
+    ui.cmbFontName->setCurrentFont(fnt);
     ui.spinFontSize->setValue(fnt.pixelSize());
     //FONT APPLICATION
     QFont appfnt;
     appfnt.fromString(setting.value("Application/applicationFont","Luxi Sans,-1,12,5,50,0,0,0,0,0").toString());
-    ui.cmbApplicationFontName->setFont(appfnt);
+    ui.cmbApplicationFontName->setCurrentFont(appfnt);
     ui.spinApplicationFontSize->setValue(appfnt.pixelSize());
 }
 
