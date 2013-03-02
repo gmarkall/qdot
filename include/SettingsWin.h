@@ -17,7 +17,8 @@ public slots:
     void ok();
     void cancel();
     void openGraphvizBrowse();
-
+signals:
+    void settingsApplied();
 };
 
 #endif // SETTINGSWIN_H

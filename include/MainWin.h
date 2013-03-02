@@ -39,7 +39,6 @@ private:
     void refreshBasicDirPath(QString);
     int zoom;
     void setCompilationState(int state);
-    void readSettings();
     QSettings *setting;
     QString editItemString;
 public:
@@ -61,6 +60,7 @@ public slots:
     void openSettingsWindow();
     void editActualElement();
     void endEditActualElement(QListWidgetItem *it);
+    void readSettings();
 
 private slots:
     void fileChange();

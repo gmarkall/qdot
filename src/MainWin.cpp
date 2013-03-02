@@ -82,9 +82,14 @@ MainWin::MainWin() : QMainWindow() {
 }
 
 void MainWin::readSettings(){
-    QFont appfnt;
+    QFont fnt, appfnt;
+    fnt.fromString(setting->value("Application/font","Luxi Sans,-1,12,5,50,0,0,0,0,0").toString());
     appfnt.fromString(setting->value("Application/applicationFont","Luxi Sans,-1,12,5,50,0,0,0,0,0").toString());
     QApplication::setFont(appfnt);
+
+    for (int i=0; i<dotEdits.size(); i++) {
+        dotEdits[i]->setFont(fnt);
+    }
 }
 
 void MainWin::connectSignals() {
@@ -455,6 +460,7 @@ void MainWin::prevTab(){
 
 void MainWin::openSettingsWindow(){
     SettingsWin *win = new SettingsWin(this);
+    connect(win,SIGNAL(settingsApplied()),this,SLOT(readSettings()));
     win->show();
 }
 

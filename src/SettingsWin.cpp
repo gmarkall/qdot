@@ -60,9 +60,10 @@ void SettingsWin::apply(){
     appfnt.setPixelSize(ui.spinApplicationFontSize->value());
     setting.setValue("applicationFont",appfnt.toString());
 
-
     //Salvataggio
     setting.endGroup();
+
+    emit settingsApplied();
 }
 
 void SettingsWin::cancel(){
